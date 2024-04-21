@@ -7,7 +7,6 @@ import com.softdesign.entity.Sessao;
 import com.softdesign.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,8 +14,12 @@ public class SessaoMapper {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final static String ERROR_LOG_MESSAGE = "Erro ao mapear a sessão de votação";
-  @Autowired
-  private ObjectMapper objectMapper;
+
+  private final ObjectMapper objectMapper;
+
+  public SessaoMapper(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
 
   public Sessao toEntity(SessaoRequestDTO sessaoRequestDTO) {
     try {

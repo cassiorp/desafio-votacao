@@ -7,7 +7,6 @@ import com.softdesign.entity.Pauta;
 import com.softdesign.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,8 +15,11 @@ public class PautaMapper {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private static final String ERROR_LOG_MESSAGE = "Erro ao mapear pauta";
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
+
+  public PautaMapper(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
 
   public Pauta toEntity(PautaRequestDTO pautaRequestDTO) {
     try {

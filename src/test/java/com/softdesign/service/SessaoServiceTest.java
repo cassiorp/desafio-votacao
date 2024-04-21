@@ -4,15 +4,12 @@ import com.softdesign.entity.Sessao;
 import com.softdesign.exception.EntityNotFoundException;
 import com.softdesign.repository.SessaoRepository;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -72,7 +69,7 @@ public class SessaoServiceTest {
 
     when(sessaoRepository.findByIdPauta(ID_TESTE)).thenReturn(Optional.of(sessao));
 
-    Sessao result = sessaoService.buscaPorId(ID_TESTE);
+    Sessao result = sessaoService.buscaPorIdPauta(ID_TESTE);
 
     assertNotNull(result);
     assertEquals(sessao.getIdPauta(), result.getIdPauta());
@@ -96,7 +93,7 @@ public class SessaoServiceTest {
     when(sessaoRepository.findByIdPauta(ID_TESTE)).thenReturn(Optional.empty());
 
     assertThrows(EntityNotFoundException.class, () -> {
-      sessaoService.buscaPorId(ID_TESTE);
+      sessaoService.buscaPorIdPauta(ID_TESTE);
     });
   }
 

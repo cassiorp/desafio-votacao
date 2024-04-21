@@ -28,10 +28,10 @@ public class SessaoService {
     return sessaoRepository.save(sessao);
   }
 
-  public Sessao buscaPorId(String idPauta) {
+  public Sessao buscaPorIdPauta(String idPauta) {
     return sessaoRepository.findByIdPauta(idPauta)
         .orElseThrow(() -> {
-          throw new EntityNotFoundException("Voting session not found for agenda: " + idPauta);
+          throw new EntityNotFoundException("Sessao não encontrada para pauta: " + idPauta);
         });
   }
 
