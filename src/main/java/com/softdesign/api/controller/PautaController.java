@@ -6,15 +6,18 @@ import static org.springframework.http.HttpStatus.OK;
 
 import com.softdesign.api.dto.PautaRequestDTO;
 import com.softdesign.api.dto.PautaResponseDTO;
+import com.softdesign.api.dto.ResultadoVotacaoDTO;
 import com.softdesign.api.mapper.PautaMapper;
 import com.softdesign.entity.Pauta;
 import com.softdesign.service.PautaService;
+import com.softdesign.service.ResultadoVotacaoService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,10 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/pauta")
 public class PautaController {
 
+  private final ResultadoVotacaoService resultadoVotacaoService;
   private final PautaService pautaService;
   private final PautaMapper pautaMapper;
 
-  public PautaController(PautaService pautaService, PautaMapper pautaMapper) {
+  public PautaController(ResultadoVotacaoService resultadoVotacaoService, PautaService pautaService,
+      PautaMapper pautaMapper) {
+    this.resultadoVotacaoService = resultadoVotacaoService;
     this.pautaService = pautaService;
     this.pautaMapper = pautaMapper;
   }
@@ -49,6 +55,13 @@ public class PautaController {
         .map(pautaMapper::toDTO)
         .collect(Collectors.toList());
     return new ResponseEntity<>(pautaResponseDTOS, OK);
+  }
+
+  @GetMapping("/{id}/resultado")
+  public ResponseEntity<ResultadoVotacaoDTO> resultadoVotacao(@PathVariable String id) {
+    ResultadoVotacaoDTO resultadoVotacaoDTO = resultadoVotacaoService
+        .buscarResultadoVotacaoPorIdPauta(id);
+    return new ResponseEntity<>(resultadoVotacaoDTO, OK);
   }
 
 }
