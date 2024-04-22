@@ -1,10 +1,5 @@
 package com.softdesign.service;
 
-import static com.softdesign.api.dto.StatusVotacaoDTO.ABERTA;
-import static com.softdesign.api.dto.StatusVotacaoDTO.APROVADA;
-import static com.softdesign.api.dto.StatusVotacaoDTO.EMPATADA;
-import static com.softdesign.api.dto.StatusVotacaoDTO.REPROVADA;
-
 import com.softdesign.api.dto.ResultadoVotacaoDTO;
 import com.softdesign.api.dto.StatusVotacaoDTO;
 import com.softdesign.entity.Pauta;
@@ -31,7 +26,7 @@ public class ResultadoVotacaoService {
 
     Pauta pauta = pautaService.buscarPorId(idPauta);
     Sessao sessao = sessaoService.buscaPorIdPauta(pauta.getId());
-    List<Voto> votos = votoService.findAllByIdPauta(pauta.getId());
+    List<Voto> votos = votoService.buscaVotoPorIdPauta(pauta.getId());
 
     Integer votosAFavor = contaVotosAFavor(votos);
     Integer votosContra = contaVotosContra(votos);

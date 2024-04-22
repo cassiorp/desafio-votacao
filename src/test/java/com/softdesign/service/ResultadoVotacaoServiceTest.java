@@ -5,17 +5,11 @@ import com.softdesign.api.dto.StatusVotacaoDTO;
 import com.softdesign.entity.Pauta;
 import com.softdesign.entity.Sessao;
 import com.softdesign.entity.Voto;
-import com.softdesign.service.PautaService;
-import com.softdesign.service.ResultadoVotacaoService;
-import com.softdesign.service.SessaoService;
-import com.softdesign.service.VotoService;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -68,7 +62,7 @@ public class ResultadoVotacaoServiceTest {
 
         when(pautaService.buscarPorId(ID_PAUTA_TESTE)).thenReturn(pauta);
         when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
-        when(votoService.findAllByIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
+        when(votoService.buscaVotoPorIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
 
         ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
 
@@ -99,7 +93,7 @@ public class ResultadoVotacaoServiceTest {
 
         when(pautaService.buscarPorId(ID_PAUTA_TESTE)).thenReturn(pauta);
         when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
-        when(votoService.findAllByIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
+        when(votoService.buscaVotoPorIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
 
         ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
 
@@ -131,7 +125,7 @@ public class ResultadoVotacaoServiceTest {
 
         when(pautaService.buscarPorId(ID_PAUTA_TESTE)).thenReturn(pauta);
         when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
-        when(votoService.findAllByIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
+        when(votoService.buscaVotoPorIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
         when(sessaoService.estaAberta(any())).thenReturn(true);
 
         ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
@@ -165,7 +159,7 @@ public class ResultadoVotacaoServiceTest {
 
         when(pautaService.buscarPorId(ID_PAUTA_TESTE)).thenReturn(pauta);
         when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
-        when(votoService.findAllByIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
+        when(votoService.buscaVotoPorIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
         when(sessaoService.estaAberta(any())).thenReturn(false);
 
         ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
@@ -200,7 +194,7 @@ public class ResultadoVotacaoServiceTest {
 
         when(pautaService.buscarPorId(ID_PAUTA_TESTE)).thenReturn(pauta);
         when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
-        when(votoService.findAllByIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
+        when(votoService.buscaVotoPorIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
         when(sessaoService.estaAberta(any())).thenReturn(false);
 
         ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);

@@ -5,6 +5,8 @@ import com.softdesign.entity.Voto;
 import com.softdesign.exception.BusinessException;
 import com.softdesign.exception.ConflictException;
 import com.softdesign.repository.VotoRepository;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +17,10 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,6 +62,20 @@ class VotoServiceTest {
   }
 
   @Test
+  void deveBuscarVotosPorIdPauta() {
+    when(votoRepository.findAllByIdPauta(ID_PAUTA_TESTE)).thenReturn(
+        Arrays.asList(
+            Voto.builder().idPauta(ID_PAUTA_TESTE).id(UUID.randomUUID().toString()).build(),
+            Voto.builder().idPauta(ID_PAUTA_TESTE).id(UUID.randomUUID().toString()).build(),
+            Voto.builder().idPauta(ID_PAUTA_TESTE).id(UUID.randomUUID().toString()).build(),
+            Voto.builder().idPauta(ID_PAUTA_TESTE).id(UUID.randomUUID().toString()).build()
+        )
+    );
+    List<Voto> votos = votoService.buscaVotoPorIdPauta(ID_PAUTA_TESTE);
+    assertEquals(votos.size(), 4);
+  }
+
+  @Test
   void votarSessaoFechada() {
     Voto voto = Voto.builder()
         .idPauta(ID_PAUTA_TESTE)
@@ -76,4 +94,37 @@ class VotoServiceTest {
 
     assertThrows(ConflictException.class, () -> votoService.votar(voto));
   }
+
+
+  @Test
+  void deveLancarConflictException() {
+    Sessao sessao = Sessao.builder().build();
+    when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
+    when(sessaoService.estaAberta(any())).thenReturn(true);
+    when(votoRepository.save(any())).thenThrow(DuplicateKeyException.class);
+    Voto voto = Voto.builder()
+        .idPauta(ID_PAUTA_TESTE)
+        .build();
+    assertThrows(ConflictException.class, () -> {
+      votoService.votar(voto);
+    });
+  }
+
+  @Test
+  void deveLancarBusinessException() {
+    Sessao sessao = Sessao.builder().build();
+    when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
+    when(sessaoService.estaAberta(sessao)).thenReturn(true);
+
+    when(votoRepository.save(any())).thenThrow(RuntimeException.class);
+
+    Voto voto = Voto.builder()
+        .idPauta(ID_PAUTA_TESTE)
+        .build();
+
+    assertThrows(BusinessException.class, () -> {
+      votoService.votar(voto);
+    });
+  }
+
 }

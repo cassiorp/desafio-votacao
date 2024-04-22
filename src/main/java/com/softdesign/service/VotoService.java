@@ -54,7 +54,7 @@ public class VotoService {
     }
   }
 
-  public List<Voto> findAllByIdPauta(String idPauta) {
+  public List<Voto> buscaVotoPorIdPauta(String idPauta) {
     return votoRepository.findAllByIdPauta(idPauta);
   }
 
