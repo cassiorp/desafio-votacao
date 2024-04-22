@@ -1,6 +1,7 @@
 package com.softdesign.service;
 
 import com.softdesign.api.dto.ResultadoVotacaoDTO;
+import com.softdesign.api.dto.StatusVotacaoDTO;
 import com.softdesign.entity.Pauta;
 import com.softdesign.entity.Sessao;
 import com.softdesign.entity.Voto;
@@ -22,6 +23,7 @@ import java.util.List;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,7 +45,7 @@ public class ResultadoVotacaoServiceTest {
     private static final Long DURACAO_TESTE = 60000l;
 
     @Test
-    void deveBuscarResultadoVotacaoPorIdPauta() {
+    void deveBuscarResultadoVotacaoPorIdPautaComSessaoAberta() {
         Pauta pauta = Pauta.builder()
             .id(ID_PAUTA_TESTE)
             .titulo(TITULO_TESTE)
@@ -71,5 +73,139 @@ public class ResultadoVotacaoServiceTest {
         ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
 
         assertEquals(ID_PAUTA_TESTE, resultado.getIdPauta());
+    }
+
+    @Test
+    void deveBuscarResultadoVotacaoPorIdPautaComVotacaoEmpatada() {
+        Pauta pauta = Pauta.builder()
+            .id(ID_PAUTA_TESTE)
+            .titulo(TITULO_TESTE)
+            .descricao(DESCRICAO_TESTE)
+            .build();
+
+        Sessao sessao = Sessao.builder()
+            .id(ID_SESSAO_TESTE)
+            .duracao(DURACAO_TESTE)
+            .dataComeco(LocalDateTime.now().minusMinutes(1))
+            .dataFim(LocalDateTime.now())
+            .build();
+
+        List<Voto> votos = Arrays.asList(
+            Voto.builder().voto(true).build(),
+            Voto.builder().voto(true).build(),
+            Voto.builder().voto(false).build(),
+            Voto.builder().voto(false).build()
+        );
+
+        when(pautaService.buscarPorId(ID_PAUTA_TESTE)).thenReturn(pauta);
+        when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
+        when(votoService.findAllByIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
+
+        ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
+
+        assertEquals(ID_PAUTA_TESTE, resultado.getIdPauta());
+        assertEquals(resultado.getStatusVotacaoDTO(), StatusVotacaoDTO.EMPATADA);
+    }
+
+    @Test
+    void deveBuscarResultadoVotacaoPorIdPautaComVotacaoAberta() {
+        Pauta pauta = Pauta.builder()
+            .id(ID_PAUTA_TESTE)
+            .titulo(TITULO_TESTE)
+            .descricao(DESCRICAO_TESTE)
+            .build();
+
+        Sessao sessao = Sessao.builder()
+            .id(ID_SESSAO_TESTE)
+            .duracao(DURACAO_TESTE)
+            .dataComeco(LocalDateTime.now().minusMinutes(5))
+            .dataFim(LocalDateTime.now())
+            .build();
+
+        List<Voto> votos = Arrays.asList(
+            Voto.builder().voto(true).build(),
+            Voto.builder().voto(true).build(),
+            Voto.builder().voto(false).build(),
+            Voto.builder().voto(false).build()
+        );
+
+        when(pautaService.buscarPorId(ID_PAUTA_TESTE)).thenReturn(pauta);
+        when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
+        when(votoService.findAllByIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
+        when(sessaoService.estaAberta(any())).thenReturn(true);
+
+        ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
+
+        assertEquals(ID_PAUTA_TESTE, resultado.getIdPauta());
+        assertEquals(resultado.getStatusVotacaoDTO(), StatusVotacaoDTO.ABERTA);
+    }
+
+    @Test
+    void deveBuscarResultadoVotacaoPorIdPautaComVotacaoAprovada() {
+        Pauta pauta = Pauta.builder()
+            .id(ID_PAUTA_TESTE)
+            .titulo(TITULO_TESTE)
+            .descricao(DESCRICAO_TESTE)
+            .build();
+
+        Sessao sessao = Sessao.builder()
+            .id(ID_SESSAO_TESTE)
+            .duracao(DURACAO_TESTE)
+            .dataComeco(LocalDateTime.now().minusMinutes(5))
+            .dataFim(LocalDateTime.now())
+            .build();
+
+        List<Voto> votos = Arrays.asList(
+            Voto.builder().voto(true).build(),
+            Voto.builder().voto(true).build(),
+            Voto.builder().voto(true).build(),
+            Voto.builder().voto(false).build(),
+            Voto.builder().voto(false).build()
+        );
+
+        when(pautaService.buscarPorId(ID_PAUTA_TESTE)).thenReturn(pauta);
+        when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
+        when(votoService.findAllByIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
+        when(sessaoService.estaAberta(any())).thenReturn(false);
+
+        ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
+
+        assertEquals(ID_PAUTA_TESTE, resultado.getIdPauta());
+        assertEquals(resultado.getStatusVotacaoDTO(), StatusVotacaoDTO.APROVADA);
+    }
+
+    @Test
+    void deveBuscarResultadoVotacaoPorIdPautaComVotacaoReprovada() {
+        Pauta pauta = Pauta.builder()
+            .id(ID_PAUTA_TESTE)
+            .titulo(TITULO_TESTE)
+            .descricao(DESCRICAO_TESTE)
+            .build();
+
+        Sessao sessao = Sessao.builder()
+            .id(ID_SESSAO_TESTE)
+            .duracao(DURACAO_TESTE)
+            .dataComeco(LocalDateTime.now().minusMinutes(5))
+            .dataFim(LocalDateTime.now())
+            .build();
+
+        List<Voto> votos = Arrays.asList(
+            Voto.builder().voto(true).build(),
+            Voto.builder().voto(true).build(),
+            Voto.builder().voto(false).build(),
+            Voto.builder().voto(false).build(),
+            Voto.builder().voto(false).build(),
+            Voto.builder().voto(false).build()
+        );
+
+        when(pautaService.buscarPorId(ID_PAUTA_TESTE)).thenReturn(pauta);
+        when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
+        when(votoService.findAllByIdPauta(ID_PAUTA_TESTE)).thenReturn(votos);
+        when(sessaoService.estaAberta(any())).thenReturn(false);
+
+        ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
+
+        assertEquals(ID_PAUTA_TESTE, resultado.getIdPauta());
+        assertEquals(resultado.getStatusVotacaoDTO(), StatusVotacaoDTO.REPROVADA);
     }
 }

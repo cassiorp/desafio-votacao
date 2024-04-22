@@ -36,32 +36,31 @@ public class ResultadoVotacaoService {
     Integer votosAFavor = contaVotosAFavor(votos);
     Integer votosContra = contaVotosContra(votos);
 
-    ResultadoVotacaoDTO resultadoVotacaoDTO = ResultadoVotacaoDTO.builder()
+    return ResultadoVotacaoDTO.builder()
         .idPauta(pauta.getId())
         .titulo(pauta.getTitulo())
         .descricao(pauta.getDescricao())
         .duracao(sessao.getDuracao())
         .dataComeco(sessao.getDataComeco())
+        .statusVotacaoDTO(getStatusVotacaoDTO(sessao, votosAFavor, votosContra))
         .dataFim(sessao.getDataFim())
         .totalDeVotos(votos.size())
         .votosAFavor(votosAFavor)
         .votosContra(votosContra)
         .build();
+  }
 
+  private StatusVotacaoDTO getStatusVotacaoDTO(Sessao sessao, Integer votosAFavor,
+      Integer votosContra) {
     if (sessaoService.estaAberta(sessao)) {
-      resultadoVotacaoDTO.setStatusVotacaoDTO(ABERTA);
+      return StatusVotacaoDTO.ABERTA;
+    } else if (votosContra > votosAFavor) {
+      return StatusVotacaoDTO.REPROVADA;
+    } else if (votosAFavor > votosContra) {
+      return StatusVotacaoDTO.APROVADA;
     } else {
-      if (votosContra > votosAFavor) {
-        resultadoVotacaoDTO.setStatusVotacaoDTO(REPROVADA);
-      }
-      if (votosAFavor > votosContra) {
-        resultadoVotacaoDTO.setStatusVotacaoDTO(APROVADA);
-      } else {
-        resultadoVotacaoDTO.setStatusVotacaoDTO(EMPATADA);
-      }
+      return StatusVotacaoDTO.EMPATADA;
     }
-
-    return resultadoVotacaoDTO;
   }
 
   private Integer contaVotosAFavor(List<Voto> votos) {
