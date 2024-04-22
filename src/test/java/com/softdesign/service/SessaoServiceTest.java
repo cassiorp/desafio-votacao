@@ -1,6 +1,8 @@
 package com.softdesign.service;
 
 import com.softdesign.entity.Sessao;
+import com.softdesign.exception.BusinessException;
+import com.softdesign.exception.ConflictException;
 import com.softdesign.exception.EntityNotFoundException;
 import com.softdesign.repository.SessaoRepository;
 import java.util.UUID;
@@ -12,6 +14,7 @@ import org.mockito.Mock;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -121,6 +124,22 @@ public class SessaoServiceTest {
     boolean result = sessaoService.estaAberta(sessao);
 
     assertFalse(result);
+  }
+
+  @Test
+  void deveLancarConflictException() {
+    when(sessaoRepository.save(any())).thenThrow(DuplicateKeyException.class);
+    assertThrows(ConflictException.class, () -> {
+      sessaoService.criar(Sessao.builder().build());
+    });
+  }
+
+  @Test
+  void deveLancarBusinessException() {
+    when(sessaoRepository.save(any())).thenThrow(RuntimeException.class);
+    assertThrows(BusinessException.class, () -> {
+      sessaoService.criar(Sessao.builder().build());
+    });
   }
 
 }
