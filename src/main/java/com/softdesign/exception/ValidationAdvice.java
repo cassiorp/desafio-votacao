@@ -18,16 +18,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class ValidationAdvice {
 
-    @ResponseStatus(BAD_REQUEST)
-    @ResponseBody
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ApiExceptionSchema methodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        BindingResult result = ex.getBindingResult();
-        List<FieldError> fieldErrors = result.getFieldErrors();
-        String errorMessage = fieldErrors.get(0).getDefaultMessage();
-        String field = fieldErrors.get(0).getField();
-        String message = field + " " + errorMessage;
-        return new ApiExceptionSchema(message, 400, BAD_REQUEST.getReasonPhrase(), ZonedDateTime.now());
-    }
-
+  @ResponseStatus(BAD_REQUEST)
+  @ResponseBody
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ApiExceptionSchema methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    BindingResult result = ex.getBindingResult();
+    List<FieldError> fieldErrors = result.getFieldErrors();
+    String errorMessage = fieldErrors.get(0).getDefaultMessage();
+    String field = fieldErrors.get(0).getField();
+    String message = field + " " + errorMessage;
+    return ApiExceptionSchema.builder()
+        .message(message)
+        .status(400)
+        .error(BAD_REQUEST.getReasonPhrase())
+        .timestamp(ZonedDateTime.now())
+        .build();
+  }
 }

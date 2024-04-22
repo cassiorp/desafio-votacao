@@ -1,10 +1,15 @@
 package com.softdesign.api.dto;
 
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@AllArgsConstructor
+@Getter
 @Builder
 public class VotoResponseDTO {
     private String id;

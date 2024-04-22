@@ -1,10 +1,15 @@
 package com.softdesign.api.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Data
+
+@AllArgsConstructor
+@Getter
+@EqualsAndHashCode
 @Builder
 public class PautaRequestDTO {
     @NotBlank

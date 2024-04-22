@@ -1,11 +1,9 @@
 package com.softdesign.exception;
 
 import java.time.ZonedDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
 
-@Data
-@AllArgsConstructor
+@Builder
 public class ApiExceptionSchema {
     private final String message;
     private final Integer status;
