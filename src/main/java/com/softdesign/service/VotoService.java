@@ -9,14 +9,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class VotoService {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
-  private static final String ERROR_LOG_MESSAGE = "Erro ao votar";
   private static final String VOTACAO_ENCERRADA_MESSAGE = "Sessão de votação encerrada";
+  private static final String CPF_JA_VOTOU_MESSAGE = "CPF já votou: ";
 
   private final VotoRepository votoRepository;
   private final SessaoService sessaoService;
@@ -37,11 +38,18 @@ public class VotoService {
   }
 
   private Voto criar(Voto voto) {
+    voto.setDataDeCriacao(LocalDateTime.now());
+    return this.save(voto);
+  }
+
+  private Voto save(Voto vote) {
     try {
-      voto.setDataDeCriacao(LocalDateTime.now());
-      return votoRepository.save(voto);
-    } catch (Exception e) {
-      logger.error(ERROR_LOG_MESSAGE, e);
+      return votoRepository.save(vote);
+    } catch (DuplicateKeyException e) {
+      logger.error(CPF_JA_VOTOU_MESSAGE, e);
+      throw new ConflictException(CPF_JA_VOTOU_MESSAGE);
+    } catch (RuntimeException e) {
+      logger.error("Erro ao salvar voto", e);
       throw new BusinessException();
     }
   }
