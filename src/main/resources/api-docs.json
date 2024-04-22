@@ -1,0 +1,371 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Api para Controle de Votações Cooperativistas",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/api/v1/voto": {
+      "post": {
+        "tags": [
+          "voto-controller"
+        ],
+        "operationId": "votar",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VotoRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiExceptionSchema"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/VotoResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sessao": {
+      "post": {
+        "tags": [
+          "sessao-controller"
+        ],
+        "operationId": "abreSessaoDeVotacaoEmPauta",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessaoRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiExceptionSchema"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessaoResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pauta": {
+      "get": {
+        "tags": [
+          "pauta-controller"
+        ],
+        "operationId": "buscarPautas",
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiExceptionSchema"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PautaResponseDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "pauta-controller"
+        ],
+        "operationId": "criarPauta",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PautaRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiExceptionSchema"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PautaResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pauta/{id}/resultado": {
+      "get": {
+        "tags": [
+          "pauta-controller"
+        ],
+        "operationId": "resultadoVotacao",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiExceptionSchema"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultadoVotacaoDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiExceptionSchema": {
+        "type": "object"
+      },
+      "VotoRequestDTO": {
+        "required": [
+          "cpf",
+          "idPauta",
+          "voto"
+        ],
+        "type": "object",
+        "properties": {
+          "idPauta": {
+            "type": "string"
+          },
+          "voto": {
+            "type": "boolean"
+          },
+          "cpf": {
+            "type": "string"
+          }
+        }
+      },
+      "VotoResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "idPauta": {
+            "type": "string"
+          },
+          "cpf": {
+            "type": "string"
+          },
+          "voto": {
+            "type": "boolean"
+          },
+          "dataDeCriacao": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SessaoRequestDTO": {
+        "required": [
+          "idPauta"
+        ],
+        "type": "object",
+        "properties": {
+          "idPauta": {
+            "type": "string"
+          },
+          "duracao": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SessaoResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "idPauta": {
+            "type": "string"
+          },
+          "duracao": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dataComeco": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataFim": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PautaRequestDTO": {
+        "required": [
+          "descricao",
+          "titulo"
+        ],
+        "type": "object",
+        "properties": {
+          "titulo": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          }
+        }
+      },
+      "PautaResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "titulo": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "dataDeCriacao": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ResultadoVotacaoDTO": {
+        "type": "object",
+        "properties": {
+          "idPauta": {
+            "type": "string"
+          },
+          "titulo": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "statusVotacaoDTO": {
+            "type": "string",
+            "enum": [
+              "ABERTA",
+              "APROVADA",
+              "REPROVADA",
+              "EMPATADA"
+            ]
+          },
+          "duracao": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dataComeco": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataFim": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalDeVotos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "votosAFavor": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "votosContra": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}
