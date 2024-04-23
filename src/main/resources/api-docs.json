@@ -223,7 +223,8 @@
             "type": "boolean"
           },
           "cpf": {
-            "type": "string"
+            "type": "string",
+            "description": "CPF sem pontuação"
           }
         }
       },
