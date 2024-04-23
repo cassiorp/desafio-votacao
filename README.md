@@ -1,52 +1,49 @@
-# desafio-votacao
-### Dependencias para rodar o projeto localmente
-- Java 17
-- Docker
-- Docker compose
+# Desafio Votação
 
+## Tecnologias usadas
 
-### Sobre o desenvolvimento
+- [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- [Spring Boot](https://spring.io/projects/spring-boot)
+- [MongoDB](https://www.mongodb.com)
+- [OpenAPI](https://swagger.io/specification/)
+- [Gradle](https://gradle.org/)
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/reference/cli/docker/compose/)
 
-O desafio foi desenvolvido com Spring boot, Gradle e MongoDB como banco de dados. A escolha de tais
-ferramentas se deu pela familiaridade com as tecnologias, visando assim um desenvolvimento mais rápido.
+## Sobre o Desenvolvimento
 
-#### Modelagem de dados
+O desafio foi realizado utilizando Spring Boot, Gradle e MongoDB como banco de dados. Essas ferramentas foram escolhidas devido à familiaridade com as tecnologias, visando um desenvolvimento mais ágil.
 
-![image](modelagem.png)
+### Modelagem de Dados
 
-#### Instruções de uso
+![Modelagem de Dados](modelagem.png)
 
-A aplicação desenvolvida possui duas dependencias para rodar. Banco de dados MongoDB e o validador de cpf
-fake (https://github.com/cassiorp/fake-cpf-validator), serviço que valida de forma randomica se um cpf é valido ou não.
-É possivel rodar toda infraestrutura para via docker-compose. Para isso é necessário ter instalado  ````Docker ````
-e  ````docker-compose ```` em seu computador.
+### Instruções de Uso
 
-Clone o repositório e navegue até a pasta docker/app:
+A aplicação requer duas dependências para funcionar localmente: um banco de dados MongoDB e um validador de CPF falso (https://github.com/cassiorp/fake-cpf-validator), um serviço que valida aleatoriamente se um CPF é válido ou não. É possível iniciar toda a infraestrutura via Docker Compose. Certifique-se de ter o Docker e o Docker Compose instalados em seu computador.
 
-`````
+1. Clone o repositório e navegue até a pasta `docker/app`:
+```bash
 cd desafio-votacao/docker/app
-````` 
+```
 
-Depois rode o comando:
+2. Execute o comando:
+```bash
+docker-compose up
+```
 
-````
-sudo docker-compose up
-````
+Isso instanciará três containers (`desafio-votacao`, `mongo_db` e `cpfvalidator`). O banco de dados criará um volume dentro do diretório `desafio-votacao/docker/mongo-data`, garantindo que os dados persistam entre reinicializações da aplicação. Você pode acessar a documentação da API em http://localhost:5000/swagger-ui/index.html.
 
-Três containers (desafio-votacao, mongo_db e cpfvalidator) irão ser instanciados, o banco de dados irá criar um volume
-dentro do diretório ````desafio-votacao/docker/mongo-data```` assim os dados não irão se perder ao reiniciar a aplicação. E você
-pode acessar a documentação da aplicação pela url: http://localhost:5000/swagger-ui/index.html
+Também é possível executar apenas as dependências do projeto e iniciar a aplicação em sua IDE de preferência. Para isso, execute o comando `sudo docker-compose up` dentro do diretório `desafio-votacao/docker/dependencies`.
 
-Também é possivel rodar apenas as dependencias do projeto e rodar a aplicação em sua IDE de preferência, para isso rode
-o comando ````sudo docker-compose up```` dentro do diretório ````desafio-votacao/docker/dependencies````
+**Coleção do Postman:** [Link para Download](https://drive.google.com/file/d/1EEcqzN9X0l0DXuLMzuWPrSYPUsfok8Tf/view?usp=sharing)
 
-Collection postman: https://drive.google.com/file/d/1EEcqzN9X0l0DXuLMzuWPrSYPUsfok8Tf/view?usp=sharing
 ## API
 
-| Rota                           | Metodo | Descricao                                                                                                                                                                                                                                                                                                                                       |
-|--------------------------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `/api/v1/pauta`                | POST   | Criar uma pauta com titulo e descrição                                                                                                                                                                                                                                                                                                          |
-| `/api/v1/pauta`                | GET    | Busca todas as pautas cadastradas                                                                                                                                                                                                                                                                                                               |
-| `/api/v1/pauta/{id}/resultado` | GET    | Busca a situação da votação de um pauta por id. O retorno vem com as datas de abertura de fim da votação, total de votos, votos contra, votos a favor e campo `status` que traz a situação da votação que pode ser `ABERTA, APROVADA, REPROVADA, EMPATADA`.                                                                                     |
-| `/api/v1/sessao`               | POST   | Cria uma sessão de votação. Existem dois campos na criação da sessão: ```idPauta: String``` que é obrigatório e precisa ser de uma pauta existente. E ```duracao: Long``` tempo de duração da votação em ***millisegundos***. Não é obrigatório e por default é 60000(1 minuto)                                                                 |
-| `/api/v1/voto`                 | POST   | Método para votação. Possui os campos ```voto: Boolean```, ```cpf: String```, ```idPauta: String``` (todos obrigatórios). A validação do cpf é feita de forma aleatória por um serviço externo. Caso o formato do cpf seja invalido, sempre ira retornar UNABLE_TO_VOTE. Caso seja valido será feito random entre ABLE_TO_VOTE e UNBALE_TO_VOTE |
+| Rota                           | Método | Descrição                                                                                                                                                                                                                                                                      |
+|--------------------------------|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `/api/v1/pauta`                | POST   | Cria uma nova pauta com título e descrição.                                                                                                                                                                                                                                    |
+| `/api/v1/pauta`                | GET    | Retorna todas as pautas cadastradas.                                                                                                                                                                                                                                           |
+| `/api/v1/pauta/{id}/resultado` | GET    | Retorna o resultado da votação de uma pauta pelo seu ID, incluindo datas de abertura e fechamento da votação, total de votos, votos a favor, votos contra e o campo `status`, indicando se a votação está `ABERTA`, `APROVADA`, `REPROVADA` ou `EMPATADA`.                        |
+| `/api/v1/sessao`               | POST   | Cria uma nova sessão de votação. Requer o campo obrigatório `idPauta` (ID da pauta existente) e o campo opcional `duracao`, que define a duração da votação em milissegundos (padrão: 60.000 - 1 minuto).                                                                         |
+| `/api/v1/voto`                 | POST   | Registra um voto. Requer os campos obrigatórios `voto` (booleano), `cpf` (String) e `idPauta` (String). A validação do CPF é realizada aleatoriamente por um serviço externo. Se o formato do CPF for inválido, será retornado sempre `UNABLE_TO_VOTE`. Se for válido, será feita uma votação aleatória entre `ABLE_TO_VOTE` e `UNBALE_TO_VOTE`. |
