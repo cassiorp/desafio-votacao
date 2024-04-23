@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
 @Builder
+@ToString
 public class PautaRequestDTO {
     @NotBlank
     private String titulo;

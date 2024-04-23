@@ -14,6 +14,8 @@ import com.softdesign.service.ResultadoVotacaoService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/pauta")
 public class PautaController {
+
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private final ResultadoVotacaoService resultadoVotacaoService;
   private final PautaService pautaService;
@@ -43,9 +47,11 @@ public class PautaController {
   public ResponseEntity<PautaResponseDTO> criarPauta(
       @RequestBody @Valid PautaRequestDTO pautaRequestDTO
   ) {
+    logger.info("Criando pauta: {} ", pautaRequestDTO);
     Pauta pauta = pautaMapper.toEntity(pautaRequestDTO);
     pauta = pautaService.criar(pauta);
     PautaResponseDTO pautaResponseDTO = pautaMapper.toDTO(pauta);
+    logger.info("Pauta criada: {}", pautaResponseDTO);
     return new ResponseEntity<>(pautaResponseDTO, CREATED);
   }
 
@@ -59,8 +65,10 @@ public class PautaController {
 
   @GetMapping("/{id}/resultado")
   public ResponseEntity<ResultadoVotacaoDTO> resultadoVotacao(@PathVariable String id) {
+    logger.info("Buscando resultado de pauta: {} ", id);
     ResultadoVotacaoDTO resultadoVotacaoDTO = resultadoVotacaoService
         .buscarResultadoVotacaoPorIdPauta(id);
+    logger.info("Resultado {} de pauta: {} ", resultadoVotacaoDTO, id);
     return new ResponseEntity<>(resultadoVotacaoDTO, OK);
   }
 

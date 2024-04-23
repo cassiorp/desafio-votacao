@@ -4,10 +4,12 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @Getter
 @Builder
+@ToString
 public class ResultadoVotacaoDTO {
     private String idPauta;
     private String titulo;

@@ -5,11 +5,16 @@ import com.softdesign.api.dto.StatusVotacaoDTO;
 import com.softdesign.entity.Pauta;
 import com.softdesign.entity.Sessao;
 import com.softdesign.entity.Voto;
+import com.softdesign.exception.BusinessException;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ResultadoVotacaoService {
+
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private final PautaService pautaService;
   private final SessaoService sessaoService;
@@ -28,21 +33,29 @@ public class ResultadoVotacaoService {
     Sessao sessao = sessaoService.buscaPorIdPauta(pauta.getId());
     List<Voto> votos = votoService.buscaVotoPorIdPauta(pauta.getId());
 
-    Integer votosAFavor = contaVotosAFavor(votos);
-    Integer votosContra = contaVotosContra(votos);
+    try {
 
-    return ResultadoVotacaoDTO.builder()
-        .idPauta(pauta.getId())
-        .titulo(pauta.getTitulo())
-        .descricao(pauta.getDescricao())
-        .duracao(sessao.getDuracao())
-        .dataComeco(sessao.getDataComeco())
-        .status(getStatusVotacaoDTO(sessao, votosAFavor, votosContra))
-        .dataFim(sessao.getDataFim())
-        .totalDeVotos(votos.size())
-        .votosAFavor(votosAFavor)
-        .votosContra(votosContra)
-        .build();
+      Integer votosAFavor = contaVotosAFavor(votos);
+      Integer votosContra = contaVotosContra(votos);
+
+      return ResultadoVotacaoDTO.builder()
+          .idPauta(pauta.getId())
+          .titulo(pauta.getTitulo())
+          .descricao(pauta.getDescricao())
+          .duracao(sessao.getDuracao())
+          .dataComeco(sessao.getDataComeco())
+          .status(getStatusVotacaoDTO(sessao, votosAFavor, votosContra))
+          .dataFim(sessao.getDataFim())
+          .totalDeVotos(votos.size())
+          .votosAFavor(votosAFavor)
+          .votosContra(votosContra)
+          .build();
+
+    } catch (RuntimeException e) {
+      logger.error("Erro ao montar resultado de votação: ", e);
+      throw new BusinessException();
+    }
+
   }
 
   private StatusVotacaoDTO getStatusVotacaoDTO(Sessao sessao, Integer votosAFavor,
