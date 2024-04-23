@@ -98,7 +98,7 @@ public class ResultadoVotacaoServiceTest {
         ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
 
         assertEquals(ID_PAUTA_TESTE, resultado.getIdPauta());
-        assertEquals(resultado.getStatusVotacaoDTO(), StatusVotacaoDTO.EMPATADA);
+        assertEquals(resultado.getStatus(), StatusVotacaoDTO.EMPATADA);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class ResultadoVotacaoServiceTest {
         ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
 
         assertEquals(ID_PAUTA_TESTE, resultado.getIdPauta());
-        assertEquals(resultado.getStatusVotacaoDTO(), StatusVotacaoDTO.ABERTA);
+        assertEquals(resultado.getStatus(), StatusVotacaoDTO.ABERTA);
     }
 
     @Test
@@ -165,7 +165,7 @@ public class ResultadoVotacaoServiceTest {
         ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
 
         assertEquals(ID_PAUTA_TESTE, resultado.getIdPauta());
-        assertEquals(resultado.getStatusVotacaoDTO(), StatusVotacaoDTO.APROVADA);
+        assertEquals(resultado.getStatus(), StatusVotacaoDTO.APROVADA);
     }
 
     @Test
@@ -200,6 +200,6 @@ public class ResultadoVotacaoServiceTest {
         ResultadoVotacaoDTO resultado = resultadoVotacaoService.buscarResultadoVotacaoPorIdPauta(ID_PAUTA_TESTE);
 
         assertEquals(ID_PAUTA_TESTE, resultado.getIdPauta());
-        assertEquals(resultado.getStatusVotacaoDTO(), StatusVotacaoDTO.REPROVADA);
+        assertEquals(resultado.getStatus(), StatusVotacaoDTO.REPROVADA);
     }
 }

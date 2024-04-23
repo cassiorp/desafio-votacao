@@ -28,7 +28,7 @@ public class SessaoService {
 
   public Sessao criar(Sessao sessao) {
     pautaService.buscarPorId(sessao.getIdPauta());
-    if (sessao.getDuracao() == null) {
+    if (sessao.getDuracao() == null || sessao.getDuracao() <= 0) {
       sessao.setDuracao(60000L);
     }
     sessao.setDataComeco(LocalDateTime.now());

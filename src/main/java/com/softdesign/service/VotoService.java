@@ -21,15 +21,19 @@ public class VotoService {
 
   private final VotoRepository votoRepository;
   private final SessaoService sessaoService;
+  private final ValidadorDeCPFService validadorDeCPFService;
 
-  public VotoService(VotoRepository votoRepository, SessaoService sessaoService) {
+  public VotoService(VotoRepository votoRepository, SessaoService sessaoService,
+      ValidadorDeCPFService validadorDeCPFService) {
     this.votoRepository = votoRepository;
     this.sessaoService = sessaoService;
+    this.validadorDeCPFService = validadorDeCPFService;
   }
 
   public Voto votar(Voto voto) {
     Sessao sessao = sessaoService.buscaPorIdPauta(voto.getIdPauta());
     if (sessaoService.estaAberta(sessao)) {
+      validadorDeCPFService.valida(voto.getCpf());
       return criar(voto);
     } else {
       logger.error(VOTACAO_ENCERRADA_MESSAGE);

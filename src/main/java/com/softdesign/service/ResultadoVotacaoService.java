@@ -37,7 +37,7 @@ public class ResultadoVotacaoService {
         .descricao(pauta.getDescricao())
         .duracao(sessao.getDuracao())
         .dataComeco(sessao.getDataComeco())
-        .statusVotacaoDTO(getStatusVotacaoDTO(sessao, votosAFavor, votosContra))
+        .status(getStatusVotacaoDTO(sessao, votosAFavor, votosContra))
         .dataFim(sessao.getDataFim())
         .totalDeVotos(votos.size())
         .votosAFavor(votosAFavor)

@@ -167,7 +167,7 @@ class PautaControllerTest {
         .idPauta(ID_TESTE)
         .titulo(TITULO_TESTE)
         .descricao(DESCRICAO_TESTE)
-        .statusVotacaoDTO(StatusVotacaoDTO.ABERTA)
+        .status(StatusVotacaoDTO.ABERTA)
         .duracao(60000L)
         .dataComeco(LocalDateTime.now())
         .dataFim(LocalDateTime.now().plusMinutes(1))

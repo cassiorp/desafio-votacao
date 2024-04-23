@@ -30,6 +30,8 @@ class VotoServiceTest {
   private VotoRepository votoRepository;
   @Mock
   private SessaoService sessaoService;
+  @Mock
+  private ValidadorDeCPFService validadorDeCPFService;
   @InjectMocks
   private VotoService votoService;
 
@@ -115,7 +117,7 @@ class VotoServiceTest {
     Sessao sessao = Sessao.builder().build();
     when(sessaoService.buscaPorIdPauta(ID_PAUTA_TESTE)).thenReturn(sessao);
     when(sessaoService.estaAberta(sessao)).thenReturn(true);
-
+    doNothing().when(validadorDeCPFService).valida(any());
     when(votoRepository.save(any())).thenThrow(RuntimeException.class);
 
     Voto voto = Voto.builder()
