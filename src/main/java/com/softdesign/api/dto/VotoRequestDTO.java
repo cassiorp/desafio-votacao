@@ -8,16 +8,20 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.validator.constraints.br.CPF;
 
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
 @Builder
+@ToString
 public class VotoRequestDTO {
     @NotBlank
     private String idPauta;
     @NotNull
     private Boolean voto;
     @NotBlank
+    @CPF
     private String cpf;
 }

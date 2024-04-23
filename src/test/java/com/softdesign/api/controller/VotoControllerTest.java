@@ -36,7 +36,7 @@ public class VotoControllerTest {
   private static final String ID_VOTO_TESTE = UUID.randomUUID().toString();
 
   @Test
-  public void testVotar() throws Exception {
+  public void deveVotarESTatus201() throws Exception {
 
     VotoRequestDTO requestDTO = VotoRequestDTO.builder()
         .cpf(CPF_TESTE)
@@ -69,6 +69,22 @@ public class VotoControllerTest {
             .content(json))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(ID_VOTO_TESTE));
+  }
+
+  public void deveLancarBadRequestComCPFInvalido() throws Exception {
+
+    VotoRequestDTO requestDTO = VotoRequestDTO.builder()
+        .cpf("2121212121212121212")
+        .idPauta(ID_PAUTA_TESTE)
+        .voto(Boolean.TRUE)
+        .build();
+
+    String json = new ObjectMapper().writeValueAsString(requestDTO);
+
+    mockMvc.perform(post("/api/v1/voto")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json))
+        .andExpect(status().isBadRequest());
   }
 
 }

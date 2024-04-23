@@ -1,9 +1,6 @@
 package com.softdesign.exception;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
-import java.time.ZonedDateTime;
-import java.util.List;
+import com.softdesign.exception.ApiExceptionSchema;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindingResult;
@@ -14,8 +11,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.time.ZonedDateTime;
+import java.util.List;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@ControllerAdvice
+@RestControllerAdvice
 public class ValidationAdvice {
 
   @ResponseStatus(BAD_REQUEST)
@@ -27,11 +30,7 @@ public class ValidationAdvice {
     String errorMessage = fieldErrors.get(0).getDefaultMessage();
     String field = fieldErrors.get(0).getField();
     String message = field + " " + errorMessage;
-    return ApiExceptionSchema.builder()
-        .message(message)
-        .status(400)
-        .error(BAD_REQUEST.getReasonPhrase())
-        .timestamp(ZonedDateTime.now())
-        .build();
+    return new ApiExceptionSchema(message, 400, BAD_REQUEST.getReasonPhrase(), ZonedDateTime.now());
   }
+
 }

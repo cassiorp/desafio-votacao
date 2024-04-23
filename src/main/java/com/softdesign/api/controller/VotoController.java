@@ -8,6 +8,8 @@ import com.softdesign.api.mapper.VotoMapper;
 import com.softdesign.entity.Voto;
 import com.softdesign.service.VotoService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/voto")
 public class VotoController {
+
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private final VotoService votoService;
   private final VotoMapper votoMapper;
@@ -32,9 +36,11 @@ public class VotoController {
   public ResponseEntity<VotoResponseDTO> votar(
       @RequestBody @Valid VotoRequestDTO votoRequestDTO
   ) {
+    logger.info("Començando voto: {}", votoRequestDTO);
     Voto voto = votoMapper.toEntity(votoRequestDTO);
     voto = votoService.votar(voto);
     VotoResponseDTO votoResponseDTO = votoMapper.toDTO(voto);
+    logger.info("Voto confirmado: {}", votoResponseDTO);
     return new ResponseEntity<>(votoResponseDTO, CREATED);
   }
 
